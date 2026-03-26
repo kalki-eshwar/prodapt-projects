@@ -1,7 +1,7 @@
 from collections.abc import Callable
 
 from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.core.database import get_database
@@ -10,7 +10,7 @@ from app.exceptions.custom_exceptions import AuthException, AuthorizationExcepti
 from app.repositories.user_repository import UserRepository
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+bearer_scheme = HTTPBearer()
 
 
 def get_db() -> AsyncIOMotorDatabase:
@@ -18,10 +18,10 @@ def get_db() -> AsyncIOMotorDatabase:
 
 
 async def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
     db: AsyncIOMotorDatabase = Depends(get_db),
 ) -> dict:
-    payload = decode_access_token(token)
+    payload = decode_access_token(credentials.credentials)
     user_id = payload.get("sub")
     if not user_id:
         raise AuthException("Invalid token payload")

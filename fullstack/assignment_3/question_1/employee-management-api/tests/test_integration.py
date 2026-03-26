@@ -2,6 +2,15 @@ def _auth_header(token: str) -> dict:
     return {"Authorization": f"Bearer {token}"}
 
 
+def test_register_admin_without_authorization(client):
+    response = client.post(
+        "/auth/register-admin",
+        json={"email": "bootstrap_admin@example.com", "password": "admin123"},
+    )
+    assert response.status_code == 200
+    assert response.json()["role"] == "admin"
+
+
 def test_employee_creation_and_profile_flow(client):
     admin_register = client.post(
         "/auth/register",
@@ -105,10 +114,10 @@ def test_attendance_tracking(client):
     )
     token = register.json()["access_token"]
 
-    # Without a profile, attendance should fail.
-    missing_profile = client.post(
+    # Registration creates a default employee profile, so attendance succeeds.
+    attendance = client.post(
         "/records",
         json={"type": "attendance", "date": "2026-03-04"},
         headers=_auth_header(token),
     )
-    assert missing_profile.status_code == 404
+    assert attendance.status_code == 200

@@ -10,9 +10,26 @@ class EmployeeService:
 
     async def get_my_profile(self, user_id: str) -> dict:
         profile = await self.employee_repository.get_by_user_id(user_id)
-        if not profile:
+        if profile:
+            return profile
+
+        user = await self.user_repository.get_by_id(user_id)
+        if not user:
             raise NotFoundException("Employee profile not found")
-        return profile
+
+        # Self-heal legacy users that were created without an employee profile.
+        if user.get("role") in {"employee", "manager"}:
+            default_name = user.get("email", "employee").split("@")[0]
+            return await self.employee_repository.create(
+                {
+                    "user_id": user_id,
+                    "name": default_name,
+                    "department": "Unassigned",
+                    "manager_id": None,
+                }
+            )
+
+        raise NotFoundException("Employee profile not found")
 
     async def update_my_profile(self, user_id: str, payload: dict) -> dict:
         profile = await self.employee_repository.get_by_user_id(user_id)
