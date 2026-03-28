@@ -1,0 +1,37 @@
+{
+  "users": [
+    {
+      "name": "Ravi",
+      "email": "ravi.mcp.20260328c@mail.com",
+      "password": "1234",
+      "id": "DGgRb9hfwMs"
+    },
+    {
+      "name": "MCP User",
+      "email": "mcp.user.1774682625955@mail.com",
+      "password": "1234",
+      "id": "ELiLZwxsH34"
+    },
+    {
+      "name": "Final MCP",
+      "email": "mcp.final.1774682695121@mail.com",
+      "password": "1234",
+      "id": "I_3lj_00u6w"
+    },
+    {
+      "name": "Kalki Eshwar",
+      "email": "kalkieshwar@email.com",
+      "password": "lamepassword",
+      "id": "THHz-V7K27A"
+    }
+  ],
+  "products": [
+    {
+      "title": "Laptop - Updated",
+      "price": 1200,
+      "category": "Electronics",
+      "id": "AUeu969coRo"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
